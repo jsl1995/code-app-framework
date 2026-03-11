@@ -1,0 +1,240 @@
+# Phase 6: Scaffolding & Build
+
+## Purpose
+
+Initialise the project, wire up connectors, generate components using GitHub Copilot,
+build, test locally, and deploy to Power Platform. This is where all previous phases
+come together into running code.
+
+## Deliverable
+
+A **working, deployable Power Apps Code App** in the user's VS Code workspace.
+
+## Step-by-Step Build Process
+
+### Step 1: Initialise the Project
+
+```bash
+# Authenticate to Power Platform
+pac auth create --environment <environmentUrl>
+
+# Scaffold the code app
+pac code init --name "MyApp" --framework react-ts
+
+# Install dependencies
+cd MyApp
+npm install
+```
+
+This creates the base project with `power.config.json`, a starter SPA, and the
+`@microsoft/power-apps` client library.
+
+**Alternative (npm CLI, v1.0.4+)**:
+```bash
+npx @microsoft/power-apps init --name "MyApp" --framework react-ts
+```
+
+### Step 2: Add Data Sources
+
+Run the commands from your Connector Manifest (Phase 5). Each command generates
+typed model and service files.
+
+```bash
+# Example: add Dataverse table
+pac code add-data-source \
+  -a shared_commondataserviceforapps \
+  -c <connectionId> \
+  -t accounts \
+  -d <orgUrl>
+
+# Example: add Office 365 Users
+pac code add-data-source -a shared_office365users -c <connectionId>
+```
+
+After each command, check `generated/services/` for the new files.
+
+### Step 3: Scaffold Components with GitHub Copilot
+
+This is where Copilot shines. Use the component tree from Phase 4 and the data
+architecture from Phase 3 to generate components.
+
+#### Recommended Copilot Workflow
+
+1. **Open the generated service files** — Copilot needs these in context
+2. **Open your type definitions** (from Phase 3)
+3. **Use Agent Mode** (`@workspace`) for multi-file generation
+4. **Use Inline Chat** (`Ctrl+I`) for single-component refinement
+
+#### Copilot Prompt Sequence
+
+**Prompt 1: App shell and routing**
+```
+@workspace Set up the app shell with React Router. Create:
+- A Layout component with a Fluent UI header (app name, user avatar from
+  Office365UsersService.MyProfile) and a side navigation
+- Routes for: Dashboard (/), List (/items), Detail (/items/:id), Create (/items/new)
+- A global ErrorBoundary component
+- A loading state that shows while the Power Apps SDK initialises
+Reference the generated services in /generated/services/ for data types.
+```
+
+**Prompt 2: Dashboard page**
+```
+@workspace Create the DashboardPage component that:
+- Fetches summary metrics using [ServiceName] (count of active items, recent items)
+- Displays metrics in a grid of Fluent UI Cards
+- Shows a "Recent Items" list with the last 5 created items
+- Each item links to its detail page
+- Handles loading, error, and empty states
+Use the types from generated/services/[Model].ts
+```
+
+**Prompt 3: List page with filtering**
+```
+@workspace Create the ListPage component that:
+- Fetches items from [ServiceName].getItems() with server-side pagination
+- Renders a Fluent UI DetailsList with sortable columns: [col1, col2, col3, status]
+- Includes a SearchBox that filters by name (server-side via $filter)
+- Includes a Dropdown filter for status
+- Has a CommandBar with "New Item" button
+- Implements pagination (next/previous) using $skip and $top
+- Shows Shimmer placeholders while loading
+```
+
+**Prompt 4: Detail / Edit page**
+```
+@workspace Create the DetailPage component that:
+- Reads the item ID from the route params
+- Fetches the full record from [ServiceName].getItem(id)
+- Displays fields in a read-only layout with an "Edit" button
+- In edit mode, switches to editable Fluent UI form controls
+- Validates required fields
+- Calls [ServiceName].updateItem() on save
+- Shows a confirmation dialog before delete
+- Navigates back to list on successful delete
+```
+
+**Prompt 5: Create form**
+```
+@workspace Create the CreateForm component that:
+- Renders a form with fields matching the [Entity] create schema
+- Uses Fluent UI controls: TextField, Dropdown (for lookups), DatePicker
+- Lookup dropdowns fetch options from related services
+- Validates all required fields before enabling Submit
+- Calls [ServiceName].createItem() and navigates to the new item's detail page
+- Handles and displays validation errors from the API
+```
+
+### Step 4: Local Development
+
+```bash
+# Start the dev server
+npm run start
+
+# The app runs locally but connector calls go through Power Platform
+# You must be authenticated (pac auth) for connectors to work
+```
+
+**Debugging tips**:
+- Open browser DevTools → Network tab to inspect connector calls
+- The Power Apps SDK logs to the console in development mode
+- Use React DevTools to inspect component state
+- If a connector call fails, check: (a) you're authenticated, (b) the connection
+  exists and is valid, (c) DLP policies allow it
+
+### Step 5: Build and Deploy
+
+```bash
+# Build for production
+npm run build
+
+# Push to Power Platform
+pac code push --solution-unique-name <solutionName>
+```
+
+The app is now available in the Power Apps portal. Share it like any canvas app.
+
+### Step 6: Post-Deployment Checklist
+
+- [ ] App appears in Power Apps portal
+- [ ] Consent dialog appears correctly on first launch
+- [ ] All connectors function with a test user account
+- [ ] DLP policies don't block the app
+- [ ] Performance is acceptable (initial load <3s on typical connection)
+- [ ] Error states display correctly when connectors are unavailable
+- [ ] App is shared with the appropriate security group
+- [ ] ALM: solution exported and stored in source control
+
+## GitHub Copilot Tips for Code Apps
+
+### Keep generated services in context
+Always have the relevant `*Service.ts` and `*Model.ts` files open (or referenced
+via `@workspace`) when asking Copilot to generate data-fetching code. Copilot
+will use the exact method signatures and types.
+
+### Use the `#file` reference
+```
+Using #file:generated/services/DataverseService.ts, create a hook called
+useAccounts that fetches and caches the account list with loading/error states.
+```
+
+### Ask Copilot to explain generated code
+```
+@workspace Explain what each method in generated/services/DataverseService.ts
+does and what parameters it accepts. Show example usage for each.
+```
+
+### Use Copilot for test generation
+```
+@workspace Generate unit tests for the useAccounts hook. Mock the
+DataverseService using jest.mock. Test: loading state, successful fetch,
+error handling, and empty results.
+```
+
+## Troubleshooting
+
+| Problem | Likely Cause | Fix |
+|---------|-------------|-----|
+| `pac code init` fails | PAC CLI not installed or not authenticated | Run `pac auth create` first |
+| Generated services are empty | Connection ID invalid or connection expired | Verify with `pac connection list` |
+| Connector calls fail locally | Not authenticated or token expired | Run `pac auth create` again |
+| App won't start in portal | DLP policy conflict | Check connector grouping in Admin Center |
+| "Premium licence required" | End user doesn't have Power Apps Premium | Assign licence in M365 Admin Center |
+| Build fails | Node version mismatch | Use Node.js LTS as specified in prerequisites |
+
+## CI/CD Pipeline (Optional)
+
+For teams wanting automated deployment:
+
+```yaml
+# Example: GitHub Actions
+name: Deploy Code App
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+      - run: npm ci
+      - run: npm run build
+      - name: Install PAC CLI
+        run: dotnet tool install --global Microsoft.PowerApps.CLI.Tool
+      - name: Authenticate
+        run: pac auth create --applicationId ${{ secrets.APP_ID }} --clientSecret ${{ secrets.CLIENT_SECRET }} --tenant ${{ secrets.TENANT_ID }}
+      - name: Deploy
+        run: pac code push --solution-unique-name ${{ vars.SOLUTION_NAME }}
+```
+
+## What's Next
+
+After deployment, consider:
+- **Monitoring**: Set up Application Insights for production telemetry
+- **Iteration**: Use the same phase workflow for v2 features
+- **Governance**: Document the app in your organisation's app catalogue
+- **Support**: Point users to the feedback & support channels
