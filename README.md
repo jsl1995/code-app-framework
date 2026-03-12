@@ -1,6 +1,6 @@
 # Power Apps Code Apps Framework
 
-An agent skills framework for building [Power Apps Code Apps](https://learn.microsoft.com/en-us/power-apps/developer/code-apps/overview) using VS Code and GitHub Copilot. It provides structured guidance, templates, and ready-to-use Copilot prompts covering the full lifecycle from brainstorming through to deployment.
+An agent skills framework for building [Power Apps Code Apps](https://learn.microsoft.com/en-us/power-apps/developer/code-apps/overview) using VS Code and GitHub Copilot. It provides structured guidance, templates, and ready-to-use Copilot prompts covering the full development lifecycle — from brainstorming through to deployment, governance, and handover.
 
 ## What are Code Apps?
 
@@ -8,27 +8,61 @@ Code Apps let you build custom single-page applications (React, Vue, vanilla TS)
 
 ## What's in this framework?
 
-| Skill | Folder | What it covers |
-|-------|--------|----------------|
-| 1. Brainstorming | [`agents/skills/brainstorming`](agents/skills/brainstorming/SKILL.md) | Problem definition, personas, scope, success criteria |
-| 2. Data Structure | [`agents/skills/data-structure`](agents/skills/data-structure/SKILL.md) | Data source selection, ER diagrams, delegation, performance |
-| 3. Mock-up | [`agents/skills/mock-up`](agents/skills/mock-up/SKILL.md) | Working React/TS mockup components with realistic sample data |
-| 4. Create Dataverse | [`agents/skills/create-dataverse`](agents/skills/create-dataverse/SKILL.md) | Dataverse table creation, columns, relationships, security roles |
-| 5. Plan Code | [`agents/skills/plan-code`](agents/skills/plan-code/SKILL.md) | Architecture, connectors, coding standards, error handling, test strategy |
-| 6. Implement Code | [`agents/skills/implement-code`](agents/skills/implement-code/SKILL.md) | Project init, Copilot prompt sequences, build, deploy |
-| 7. Power Apps Code Apps | [`agents/skills/power-apps-code-apps`](agents/skills/power-apps-code-apps/SKILL.md) | Platform overview, full lifecycle conventions, master reference |
+Eleven skills covering the full lifecycle, organised into three groups.
 
-The [`AGENTS.md`](AGENTS.md) file at the root is the entry point for Copilot agent mode.
+### Group 1: Design
+
+Do these before writing any application code.
+
+| Phase | Skill | What it covers |
+|-------|-------|----------------|
+| 1 | [Brainstorming](agents/skills/brainstorming/SKILL.md) | Problem definition, personas, scope, success criteria, platform limitations |
+| 2 | [Architecture](agents/skills/architecture/SKILL.md) | Solution design, hosting model, ALM strategy, security posture |
+| 3 | [Data Structure](agents/skills/data-structure/SKILL.md) | Data source selection, ER diagrams, delegation, performance |
+| 4 | [Mock-up](agents/skills/mock-up/SKILL.md) | Working React/TS mockup components with realistic sample data |
+| 5 | [Connectors](agents/skills/connectors/SKILL.md) | Connector manifest, connection references, generated services guidance |
+
+### Group 2: Build
+
+| Phase | Skill | What it covers |
+|-------|-------|----------------|
+| 6 | [Implement Code](agents/skills/implement-code/SKILL.md) | Project init, data source discovery, Copilot prompt sequences, build, deploy |
+| 10 | [Coding Standards](agents/skills/coding-standards/SKILL.md) | TypeScript strict, ESLint, Prettier, Husky, VS Code settings (set up at Phase 6 start) |
+| 11 | [Error Handling](agents/skills/error-handling/SKILL.md) | Error taxonomy, retry logic, ErrorBoundary, logging, Application Insights |
+
+### Group 3: Assure & Ship
+
+| Phase | Skill | What it covers |
+|-------|-------|----------------|
+| 7 | [Testing](agents/skills/testing/SKILL.md) | Unit, integration, E2E, accessibility, and UAT strategy |
+| 8 | [Accessibility](agents/skills/accessibility/SKILL.md) | WCAG 2.2 AA audit, ARIA patterns, axe-core tooling |
+| 9 | [Governance](agents/skills/governance/SKILL.md) | Handover pack, ops runbook, naming conventions, changelog |
+
+**Supporting references:**
+- [`AGENTS.md`](AGENTS.md) — root orchestrator, read by Copilot agent mode first
+- [`agents/skills/pac-reference.md`](agents/skills/pac-reference.md) — PAC CLI command cheatsheet
+- [`agents/skills/power-apps-code-apps/SKILL.md`](agents/skills/power-apps-code-apps/SKILL.md) — master platform reference
+
+## Platform limitations
+
+Know these before scoping a project — they are hard constraints, not workarounds:
+
+| Limitation | Impact |
+|-----------|--------|
+| No Power Apps mobile or Windows app support | Desktop browser only |
+| Excel Online (Business) and Excel Online (OneDrive) not supported | Cannot use Excel as a data source |
+| No Power BI data integration | Embed via iframe if needed |
+| No SharePoint Forms integration | Cannot replace SharePoint list forms |
+| No Power Platform Git integration (initial release) | ALM via solution export/import only |
+| Connector schema changes require delete-and-re-add | No refresh command exists |
 
 ## Prerequisites
 
-Before using this framework, make sure you have:
-
 - [VS Code](https://code.visualstudio.com/) with the [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot) and [GitHub Copilot Chat](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat) extensions
 - [Node.js](https://nodejs.org/) (LTS version)
-- [Power Apps CLI](https://learn.microsoft.com/en-us/power-platform/developer/cli/introduction) (`pac`) installed and on your PATH
+- [Power Apps CLI](https://learn.microsoft.com/en-us/power-platform/developer/cli/introduction) (`pac`) installed, **or** the npm-based CLI (`npx @microsoft/power-apps`) from v1.0.4+
 - A Power Platform environment with the **Code Apps** feature enabled
-- Power Apps Premium licences for end users
+- Power Apps Premium licences for all end users
 - A GitHub account (for source control and Copilot)
 
 ## Getting started
@@ -37,37 +71,33 @@ Before using this framework, make sure you have:
 
 ```bash
 git clone https://github.com/jsl1995/code-app-framework.git
-```
-
-### Step 2: Open in VS Code
-
-```bash
 code code-app-framework
 ```
 
-### Step 3: Start using the skills
+### Step 2: Start a new project
 
-Open the skill you need from the `agents/skills/` folder. Each `SKILL.md` is self-contained with templates, code examples, and Copilot prompts.
+Open Copilot Chat in VS Code, switch to **Agent Mode** (`@workspace`), and start with:
 
-**Starting a new project?** Begin with `agents/skills/brainstorming/SKILL.md` and work through sequentially.
+```
+@workspace I want to build a Power Apps Code App. Let's start from the beginning.
+```
 
-**Joining mid-flight?** Jump to the relevant skill — they work independently too.
+Copilot will read `AGENTS.md` and guide you through Phase 1 (Brainstorming).
+
+### Step 3: Or jump to a specific phase
+
+If you're mid-project, open the relevant `SKILL.md` directly and follow its instructions. Each skill is self-contained.
 
 ## Using with GitHub Copilot
 
-This framework is designed to work hand-in-hand with GitHub Copilot in VS Code. Every skill includes ready-to-paste prompts for both **Copilot Chat** and **Agent Mode**.
+Every skill includes ready-to-paste prompts for **Copilot Chat** and **Agent Mode**.
 
-### Copilot Agent Mode (recommended)
+### Agent Mode (recommended)
 
-Agent Mode (`@workspace`) gives Copilot access to your entire project. To use it:
+Agent Mode (`@workspace`) gives Copilot access to your entire project, including `AGENTS.md`, skill files, and generated service files.
 
-1. Open Copilot Chat in VS Code
-2. Start your prompt with `@workspace`
-3. Copilot will scan your project files — including the `AGENTS.md` and skill files — and generate contextually accurate code
-
-**Example:**
 ```
-@workspace Create a React component for the AccountListPage that:
+@workspace Create a React component for AccountListPage that:
 - Fetches data from DataverseService using the generated service in /generated/services/
 - Displays results in a Fluent UI DetailsList with sortable columns
 - Includes a SearchBox filter
@@ -75,19 +105,9 @@ Agent Mode (`@workspace`) gives Copilot access to your entire project. To use it
 Use TypeScript, functional components with hooks.
 ```
 
-### Copilot Inline Chat
-
-For quick edits to existing code, select code and press `Ctrl+I` / `Cmd+I`:
-
-```
-Add WCAG 2.2 AA accessibility attributes to this form: aria-required on
-mandatory fields, aria-invalid on error states, and associate error
-messages using aria-describedby.
-```
-
 ### File references in prompts
 
-Use `#file:` to point Copilot at specific files for context:
+Point Copilot at specific files for tighter context:
 
 ```
 Using #file:generated/services/DataverseService.ts, create a custom hook
@@ -95,19 +115,19 @@ called useAccounts that fetches and caches the account list with loading,
 error, and refetch states.
 ```
 
-### Prompt sequence for a full build
+### Prompt sequence (implement-code skill)
 
-The `implement-code` skill provides a structured prompt sequence that walks you through generating an entire app:
+The `implement-code` skill provides a structured prompt sequence for generating a full app:
 
-1. **App shell and routing** — layout, navigation, error boundary
-2. **Dashboard page** — metrics, recent items
-3. **List page** — data table, filtering, pagination
-4. **Detail page** — view, edit, delete
-5. **Create form** — validation, lookups, submission
+1. App shell and routing — layout, navigation, error boundary
+2. Dashboard page — metrics, recent items
+3. List page — data table, filtering, pagination
+4. Detail page — view, edit, delete
+5. Create form — validation, lookups, submission
 
 ## Using with Claude Code
 
-This framework also works as a skill set for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Clone this repo into your project or reference it from your skill path, and ask Claude to help with any phase.
+This framework also works as a skill set for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Clone this repo and ask Claude to work through any phase using the skill files as context.
 
 ## Project structure
 
@@ -115,25 +135,23 @@ This framework also works as a skill set for [Claude Code](https://docs.anthropi
 code-app-framework/
 ├── AGENTS.md                              # Root orchestrator — Copilot reads this first
 ├── README.md                              # This file
-├── agents/
-│   └── skills/
-│       ├── brainstorming/
-│       │   └── SKILL.md                   # Problem definition & scoping
-│       ├── create-dataverse/
-│       │   └── SKILL.md                   # Dataverse setup, tables, security
-│       ├── data-structure/
-│       │   └── SKILL.md                   # Data sources, ER diagrams, delegation
-│       ├── implement-code/
-│       │   └── SKILL.md                   # Build, Copilot prompts, deploy
-│       ├── mock-up/
-│       │   └── SKILL.md                   # Working React/TS mockup generation
-│       ├── plan-code/
-│       │   └── SKILL.md                   # Architecture, connectors, standards
-│       └── power-apps-code-apps/
-│           └── SKILL.md                   # Master reference & conventions
-├── .vscode/                               # VS Code workspace settings
-└── docs/
-    └── assets/                            # Documentation assets
+└── agents/
+    └── skills/
+        ├── pac-reference.md               # PAC CLI command cheatsheet (all pac code commands)
+        ├── brainstorming/SKILL.md         # Phase 1: problem definition & scoping
+        ├── architecture/SKILL.md          # Phase 2: solution architecture & ALM
+        ├── data-structure/SKILL.md        # Phase 3: data sources, ER diagrams, delegation
+        ├── mock-up/SKILL.md               # Phase 4: working React/TS mockup generation
+        ├── connectors/SKILL.md            # Phase 5: connector manifest & connection references
+        ├── implement-code/SKILL.md        # Phase 6: build, Copilot prompts, deploy
+        ├── testing/SKILL.md               # Phase 7: unit, integration, E2E, UAT
+        ├── accessibility/SKILL.md         # Phase 8: WCAG 2.2 AA audit
+        ├── governance/SKILL.md            # Phase 9: handover pack & runbook
+        ├── coding-standards/SKILL.md      # Phase 10: ESLint, Prettier, TypeScript config
+        ├── error-handling/SKILL.md        # Phase 11: retry logic, logging, App Insights
+        ├── create-dataverse/SKILL.md      # Dataverse setup, tables, security roles
+        ├── plan-code/SKILL.md             # Architecture, connectors, standards, test strategy
+        └── power-apps-code-apps/SKILL.md  # Master platform reference & conventions
 ```
 
 ## Key resources
@@ -141,7 +159,8 @@ code-app-framework/
 - [Power Apps Code Apps Overview](https://learn.microsoft.com/en-us/power-apps/developer/code-apps/overview)
 - [Code Apps Architecture](https://learn.microsoft.com/en-us/power-apps/developer/code-apps/architecture)
 - [Connect to Data](https://learn.microsoft.com/en-us/power-apps/developer/code-apps/how-to/connect-to-data)
-- [Power Apps Code Apps GitHub](https://github.com/microsoft/PowerAppsCodeApps) — Samples and templates from Microsoft
+- [PAC CLI Reference](https://learn.microsoft.com/en-us/power-platform/developer/cli/reference/code)
+- [Power Apps Code Apps GitHub](https://github.com/microsoft/PowerAppsCodeApps) — samples and templates from Microsoft
 - [GitHub Copilot Docs](https://docs.github.com/en/copilot)
 
 ## Contributing
