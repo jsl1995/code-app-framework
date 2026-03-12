@@ -201,5 +201,5 @@ Show me the implementation for [primary connector] first.
 
 ## Transition to Phase 6
 
-With connectors planned and documented, read `references/06-scaffolding.md` to
+With connectors planned and documented, read `agents/skills/implement-code/SKILL.md` to
 initialise the project, add data sources, and build the app.

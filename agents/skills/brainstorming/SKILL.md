@@ -89,5 +89,5 @@ Getting Started, Architecture, and Deployment.
 
 ## Transition to Phase 2
 
-Once the project brief is agreed, read `references/02-architecture.md` and begin
+Once the project brief is agreed, read `agents/skills/architecture/SKILL.md` and begin
 designing the solution architecture.

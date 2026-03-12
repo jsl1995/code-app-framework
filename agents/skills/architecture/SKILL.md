@@ -187,5 +187,5 @@ explaining each folder's purpose.
 
 ## Transition to Phase 3
 
-Once the architecture is agreed, read `references/03-data-architecture.md` to
+Once the architecture is agreed, read `agents/skills/data-structure/SKILL.md` to
 design the data layer.

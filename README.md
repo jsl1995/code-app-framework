@@ -10,19 +10,19 @@ Code Apps let you build custom single-page applications (React, Vue, vanilla TS)
 
 | Phase | File | What it covers |
 |-------|------|----------------|
-| 1. Brainstorming | [`references/01-brainstorming.md`](references/01-brainstorming.md) | Problem definition, personas, scope, success criteria |
-| 2. Solution Architecture | [`references/02-architecture.md`](references/02-architecture.md) | Framework choice, state management, ALM, security model |
-| 3. Data Architecture | [`references/03-data-architecture.md`](references/03-data-architecture.md) | Data source selection, ER diagrams, delegation, performance |
-| 4. UI Mockups | [`references/04-ui-mockups.md`](references/04-ui-mockups.md) | Wireframes, component tree, responsive breakpoints |
-| 5. Connectors & Data Sources | [`references/05-connectors.md`](references/05-connectors.md) | Connector manifest, DLP checks, `pac code add-data-source` commands |
-| 6. Scaffolding & Build | [`references/06-scaffolding.md`](references/06-scaffolding.md) | Project init, Copilot prompt sequences, local dev, deployment |
-| 7. Testing & QA | [`references/07-testing.md`](references/07-testing.md) | Unit, integration, E2E (Playwright), UAT scripts, performance |
-| 8. Accessibility | [`references/08-accessibility.md`](references/08-accessibility.md) | WCAG 2.2 AA checklist, ARIA patterns, axe-core integration |
-| 9. Governance & Handover | [`references/09-governance.md`](references/09-governance.md) | Documentation templates, runbooks, naming conventions |
-| 10. Coding Standards | [`references/10-coding-standards.md`](references/10-coding-standards.md) | ESLint, Prettier, TypeScript config, PR review checklist |
-| 11. Error Handling | [`references/11-error-handling.md`](references/11-error-handling.md) | Error taxonomy, retry logic, logging, Application Insights |
+| 1. Brainstorming | [`agents/skills/brainstorming/SKILL.md`](agents/skills/brainstorming/SKILL.md) | Problem definition, personas, scope, success criteria |
+| 2. Solution Architecture | [`agents/skills/architecture/SKILL.md`](agents/skills/architecture/SKILL.md) | Framework choice, state management, ALM, security model |
+| 3. Data Architecture | [`agents/skills/data-structure/SKILL.md`](agents/skills/data-structure/SKILL.md) | Data source selection, ER diagrams, delegation, performance |
+| 4. UI Mockups | [`agents/skills/mock-up/SKILL.md`](agents/skills/mock-up/SKILL.md) | Wireframes, component tree, responsive breakpoints |
+| 5. Connectors & Data Sources | [`agents/skills/connectors/SKILL.md`](agents/skills/connectors/SKILL.md) | Connector manifest, DLP checks, `pac code add-data-source` commands |
+| 6. Scaffolding & Build | [`agents/skills/implement-code/SKILL.md`](agents/skills/implement-code/SKILL.md) | Project init, Copilot prompt sequences, local dev, deployment |
+| 7. Testing & QA | [`agents/skills/testing/SKILL.md`](agents/skills/testing/SKILL.md) | Unit, integration, E2E (Playwright), UAT scripts, performance |
+| 8. Accessibility | [`agents/skills/accessibility/SKILL.md`](agents/skills/accessibility/SKILL.md) | WCAG 2.2 AA checklist, ARIA patterns, axe-core integration |
+| 9. Governance & Handover | [`agents/skills/governance/SKILL.md`](agents/skills/governance/SKILL.md) | Documentation templates, runbooks, naming conventions |
+| 10. Coding Standards | [`agents/skills/coding-standards/SKILL.md`](agents/skills/coding-standards/SKILL.md) | ESLint, Prettier, TypeScript config, PR review checklist |
+| 11. Error Handling | [`agents/skills/error-handling/SKILL.md`](agents/skills/error-handling/SKILL.md) | Error taxonomy, retry logic, logging, Application Insights |
 
-The orchestrator file [`SKILL.md`](SKILL.md) ties everything together and explains how the phases relate.
+The `AGENTS.md` file at the root is the entry point for Copilot agent mode. The master skill in [`agents/skills/power-apps-code-apps/SKILL.md`](agents/skills/power-apps-code-apps/SKILL.md) contains the full phase table and conventions.
 
 ## Prerequisites
 
@@ -51,7 +51,7 @@ code code-app-framework
 
 ### Step 3: Start using the phases
 
-Open the phase you need from the `references/` folder. Each file is self-contained with templates, code examples, and Copilot prompts.
+Open the phase you need from the `agents/skills/` folder. Each file is self-contained with templates, code examples, and Copilot prompts.
 
 **Starting a new project?** Begin with Phase 1 (`references/01-brainstorming.md`) and work through sequentially.
 
@@ -163,20 +163,38 @@ Design                          Build                    Assure & Ship
 
 ```
 code-app-framework/
+├── AGENTS.md                              # Root orchestrator — Copilot agent reads this first
 ├── README.md                              # This file
-├── SKILL.md                               # Orchestrator — ties all phases together
-└── references/
-    ├── 01-brainstorming.md                # Problem definition & scoping
-    ├── 02-architecture.md                 # Solution architecture & ADR
-    ├── 03-data-architecture.md            # Data sources, ER diagrams, delegation
-    ├── 04-ui-mockups.md                   # Wireframes & component hierarchy
-    ├── 05-connectors.md                   # Connector manifest & DLP checks
-    ├── 06-scaffolding.md                  # Build, Copilot prompts, deploy
-    ├── 07-testing.md                      # Test strategy & implementation
-    ├── 08-accessibility.md                # WCAG 2.2 AA compliance
-    ├── 09-governance.md                   # Handover docs & naming conventions
-    ├── 10-coding-standards.md             # Linting, formatting, PR standards
-    └── 11-error-handling.md               # Error handling & observability
+├── SKILL.md                               # Master skill — full phase table & conventions
+├── agents/
+│   └── skills/
+│       ├── brainstorming/
+│       │   └── SKILL.md                   # Problem definition & scoping
+│       ├── architecture/
+│       │   └── SKILL.md                   # Solution architecture & ADR
+│       ├── data-structure/
+│       │   └── SKILL.md                   # Data sources, ER diagrams, delegation
+│       ├── mock-up/
+│       │   └── SKILL.md                   # Working React/TS mockup generation
+│       ├── connectors/
+│       │   └── SKILL.md                   # Connector manifest & DLP checks
+│       ├── coding-standards/
+│       │   └── SKILL.md                   # ESLint, Prettier, TypeScript config
+│       ├── implement-code/
+│       │   └── SKILL.md                   # Build, Copilot prompts, deploy
+│       ├── error-handling/
+│       │   └── SKILL.md                   # Error handling & observability
+│       ├── testing/
+│       │   └── SKILL.md                   # Test strategy & implementation
+│       ├── accessibility/
+│       │   └── SKILL.md                   # WCAG 2.2 AA compliance
+│       ├── governance/
+│       │   └── SKILL.md                   # Handover docs & naming conventions
+│       └── power-apps-code-apps/
+│           └── SKILL.md                   # Master orchestrator skill
+├── .vscode/                               # VS Code workspace settings
+└── docs/
+    └── assets/                            # Documentation assets
 ```
 
 ## Key resources

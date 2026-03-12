@@ -420,5 +420,5 @@ Save to src/pages/ListPage.tsx
 ## Transition to Phase 5
 
 With rendered, interactive mockups reviewed and signed off, read
-`references/05-connectors.md` to plan which connectors and data sources
+`agents/skills/connectors/SKILL.md` to plan which connectors and data sources
 the app needs, and how to wire them up.

@@ -171,5 +171,5 @@ that omit auto-generated fields. Place files in src/types/.
 
 ## Transition to Phase 4
 
-With the data model defined, read `references/04-ui-mockups.md` to design the
+With the data model defined, read `agents/skills/mock-up/SKILL.md` to design the
 user interface that will consume this data.
