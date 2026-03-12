@@ -16,8 +16,8 @@ description: >
 # Power Apps Code Apps — Full Lifecycle Development Skill
 
 This skill guides you through building Power Apps Code Apps in VS Code with GitHub Copilot.
-It is organised into six phases, each backed by a dedicated reference file. Read the
-relevant phase file before executing that phase's work.
+It is organised into eleven phases across three groups, each backed by a dedicated reference
+file. Read the relevant phase file before executing that phase's work.
 
 ## What are Code Apps?
 
@@ -81,5 +81,21 @@ Phase 7 (Testing) runs throughout build. Phases 8 and 9 gate the release.
 - All file outputs use TypeScript unless the user specifies JavaScript.
 - Default framework is React; ask if the user prefers Vue or vanilla.
 - Data models use the generated services pattern from `@microsoft/power-apps`.
+- **Never edit files in `generated/services/`** — owned by the CLI, regenerate via delete-and-re-add.
+- Use **connection references** (not raw connection IDs) for multi-environment ALM.
 - Connector plans always note whether connectors are standard or premium.
 - Architecture diagrams use Mermaid syntax for portability.
+- Consult `agents/skills/pac-reference.md` for all `pac code` CLI commands.
+
+## Platform limitations
+
+Know these before scoping any project:
+
+| Limitation | Impact |
+|-----------|--------|
+| No Power Apps mobile / Windows app | Desktop browser only |
+| Excel Online (Business) and Excel Online (OneDrive) not supported | Cannot use Excel as a data source |
+| No Power BI data integration | Embed via iframe if needed |
+| No SharePoint Forms integration | Cannot replace SharePoint list forms |
+| No Power Platform Git integration | ALM via solution export/import only |
+| Schema changes on connectors require delete-and-re-add | No refresh command exists |

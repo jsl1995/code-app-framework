@@ -41,6 +41,20 @@ into the conversation flow.
 - Is code apps enabled on that environment?
 - Are there Data Loss Prevention (DLP) policies that restrict connector grouping?
 - Budget / licensing considerations?
+- Will users access the app on mobile or desktop? *(Code apps do not run on the Power Apps mobile app or Windows app — desktop browser only)*
+
+### Platform Limitations Checklist
+
+Review these before finalising scope. Each is a hard constraint, not a workaround:
+
+| Limitation | Impact |
+|-----------|--------|
+| No Power Apps mobile / Windows app support | All users must access via desktop browser |
+| Excel Online (Business) and Excel Online (OneDrive) connectors not supported | Don't plan Excel as a data source |
+| No Power BI data integration (`PowerBIIntegration` function unavailable) | Embed Power BI via iframe if needed |
+| No SharePoint Forms integration | Can't replace SharePoint list forms |
+| No Power Platform Git integration | ALM via solution export/import only |
+| Schema changes on connectors require delete-and-re-add | Factor into change management planning |
 
 ## Output Template
 
@@ -89,5 +103,5 @@ Getting Started, Architecture, and Deployment.
 
 ## Transition to Phase 2
 
-Once the project brief is agreed, read `agents/skills/architecture/SKILL.md` and begin
-designing the solution architecture.
+Once the project brief is agreed and platform limitations are acknowledged, read
+`agents/skills/architecture/SKILL.md` and begin designing the solution architecture.

@@ -191,6 +191,29 @@ src/
 | Deploy | `pac code push --solution-unique-name [name]` |
 | CI/CD | GitHub Actions or Azure Pipelines (optional) |
 | Solution backup | `pac solution export` before each release |
+| Data source binding | Use **connection references** (not raw connection IDs) for env portability |
+
+### Connection References vs Direct Connection IDs
+
+Always use connection references when deploying across multiple environments. Direct
+connection IDs are user-specific and will break when the solution is imported into
+Test or Prod.
+
+```bash
+# During Phase 5/6 — bind data sources via connection reference
+pac code add-data-source -a <apiName> -cr <connectionReferenceLogicalName> -s <solutionID>
+
+# Discover connection references in a solution
+pac code list-connection-references -env <environmentURL> -s <solutionID>
+```
+
+> **Schema changes**: If a connector's schema changes, there is no refresh command.
+> Delete the data source and re-add it. Plan connector schema changes as a migration step.
+
+```bash
+pac code delete-data-source -a <apiName> -ds <dataSourceName>
+pac code add-data-source ...   # re-add with updated schema
+```
 
 ## Security Checklist
 
