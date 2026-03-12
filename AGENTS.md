@@ -1,55 +1,44 @@
 # Power Apps Code Apps — Agent Instructions
 
-Guide the developer through building a Power Apps Code App from scratch. Understand what the app needs to do, who it's for, then work through each skill in sequence to produce all deliverables (mock-up, data structure, connectors, implementation, testing, and handover).
+Guide the developer through building a Power Apps Code App from scratch. Understand what the app needs to do, who it's for, then work through each skill in sequence to produce all deliverables (mock-up, data structure, Dataverse setup, implementation plan, and working code).
 
 ## How it works
 
-There are three phases — **Design**, **Build**, and **Assure & Ship** — with a natural conversation flow through each skill. Always start with Phase 1 unless the developer says otherwise.
+There are three phases with a natural conversation flow through each skill. Always start with Phase 1 unless the developer says otherwise.
 
 ### Phase 1: Understand & Design
 
-Start by reading the brainstorming skill in `agents/skills/brainstorming/SKILL.md`. Interview the developer to understand the business problem, users, scope, and success criteria. Summarize what you learn into a **Project Brief**.
+Start by reading the brainstorming skill in `agents/skills/brainstorming/SKILL.md`. Interview the developer to understand the business problem, users, scope, and success criteria. Summarize what you find into a **Project Brief**.
 
 Then work through these skills in order:
 
 1. **brainstorming** — Define the problem, personas, scope, and success criteria
-2. **architecture** — Choose framework, state management, ALM strategy, security model
-3. **data-structure** — Design data sources, entity schemas, ER diagrams, delegation rules
-4. **mock-up** — Generate real, working React/TypeScript mockup components with sample data
-5. **connectors** — Map data requirements to Power Platform connectors, verify DLP compliance
+2. **data-structure** — Design data sources, entity schemas, ER diagrams, delegation rules
+3. **mock-up** — Generate real, working React/TypeScript mockup components with sample data
 
-### Phase 2: Build
+### Phase 2: Build the Backend
 
-Before writing any production code, set up standards:
+4. **create-dataverse** — Set up the Dataverse environment, create tables, columns, relationships, security roles, and sample data
 
-6. **coding-standards** — Configure ESLint, Prettier, TypeScript, VS Code settings, git hooks
-7. **implement-code** — Scaffold the project, add data sources, generate components with Copilot
-8. **error-handling** — Implement error boundaries, connector wrappers with retry, logging
+### Phase 3: Plan & Implement
 
-### Phase 3: Assure & Ship
-
-9. **testing** — Unit tests, integration tests, E2E with Playwright, UAT scripts
-10. **accessibility** — WCAG 2.2 AA audit, ARIA patterns, axe-core integration
-11. **governance** — Documentation, runbooks, naming conventions, handover pack
+5. **plan-code** — Architecture decisions, connector manifest, coding standards, error handling strategy, test plan
+6. **implement-code** — Scaffold the project, add data sources, generate components with Copilot, build and deploy
+7. **power-apps-code-apps** — Master reference for the Power Apps Code Apps platform, conventions, and full lifecycle overview
 
 ## Skill reference
 
-Each skill lives in `agents/skills/[skill-name]/SKILL.md`. Read the relevant SKILL.md before starting that phase's work. The orchestrator skill in `agents/skills/power-apps-code-apps/SKILL.md` contains the full phase table and conventions.
+Each skill lives in `agents/skills/[skill-name]/SKILL.md`. Read the relevant SKILL.md before starting that phase's work.
 
 | Skill Folder | Purpose |
 |-------------|---------|
 | `brainstorming` | Problem definition, personas, scope, success criteria |
-| `architecture` | Framework choice, state management, ALM, security model |
 | `data-structure` | Data sources, ER diagrams, delegation, performance |
 | `mock-up` | Working React/TS mockup components with realistic sample data |
-| `connectors` | Connector manifest, DLP checks, pac code add-data-source commands |
-| `coding-standards` | ESLint, Prettier, TypeScript config, PR review checklist |
+| `create-dataverse` | Dataverse table creation, columns, relationships, security roles |
+| `plan-code` | Architecture, connectors, standards, error handling, test strategy |
 | `implement-code` | Project init, Copilot prompt sequences, build, deploy |
-| `error-handling` | Error taxonomy, retry logic, logging, Application Insights |
-| `testing` | Unit, integration, E2E, UAT, performance testing |
-| `accessibility` | WCAG 2.2 AA checklist, ARIA patterns, compliance report |
-| `governance` | Documentation templates, runbooks, naming conventions, handover |
-| `power-apps-code-apps` | Master orchestrator — full phase table and conventions |
+| `power-apps-code-apps` | Master orchestrator — platform overview, full phase table, conventions |
 
 ## Key conventions
 
