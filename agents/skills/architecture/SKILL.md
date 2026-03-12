@@ -11,6 +11,12 @@ posture that govern all subsequent phases.
 A **Solution Architecture Document** containing a component diagram, hosting decisions,
 ALM plan, and security checklist.
 
+## How to run this phase
+
+Read `UseCase.md` before asking the developer any questions. Extract the environment
+URL, DLP policies, solution name, target environments, and ALM preferences. Only ask
+about what UseCase.md doesn't answer.
+
 ## Architecture Components
 
 A Power Apps code app has three runtime layers:

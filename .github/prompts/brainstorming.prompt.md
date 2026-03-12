@@ -1,37 +1,46 @@
 ---
 agent: 'agent'
-description: 'Start Phase 1: Brainstorm the code app — define the problem, users, scope, and success criteria'
-tools: ['editFiles', 'createFile']
+description: 'Phase 1: Read UseCase.md, fill any gaps, and produce the Project Brief'
+tools: ['editFiles', 'createFile', 'readFile']
 ---
 
-You are guiding a developer through Phase 1 of building a Power Apps Code App.
+You are running Phase 1 of a Power Apps Code App build.
 
-Read the skill file for full guidance: [brainstorming skill](../../agents/skills/brainstorming/SKILL.md)
+Read the full guidance in [brainstorming skill](../../agents/skills/brainstorming/SKILL.md).
 
 ## Your task
 
-Interview the developer to understand what they're building. Ask these questions **one group at a time**, waiting for answers before continuing:
+### Step 1: Read UseCase.md
 
-**Group 1 — Problem & Context:**
-- What business problem does this app solve?
-- What process is manual or broken today?
-- Is there an existing app being replaced?
+Read `UseCase.md` from the project root. Identify which sections have real answers
+and which are blank or marked `TBD`.
 
-**Group 2 — Users & Personas:**
-- Who are the primary users? (role, technical comfort, device)
-- Are there secondary user groups?
-- Approximate user count?
-- Are external / guest users involved?
+Summarise what you found:
+> "I've read your UseCase.md. Here's what I have: [brief summary of app name, problem, users, capabilities]. I have [n] questions about the sections that need more detail."
 
-**Group 3 — Scope:**
-- What are the 3–5 "must have" capabilities for v1?
-- What is explicitly out of scope?
+### Step 2: Ask only about gaps
 
-**Group 4 — Success & Constraints:**
-- How will you measure success?
-- Which Power Platform environment?
-- Any DLP policies or licensing constraints?
+For each section that is blank or `TBD`, ask the corresponding question from the
+brainstorming skill file. Group related gaps — don't ask one question per field.
 
-After gathering all answers, generate a **Project Brief** document using the template in the skill file. Save it as `docs/project-brief.md`.
+If UseCase.md is fully complete, skip this step entirely.
 
-Tell the developer: "Project brief complete. Type `/data-structure` to design the data layer next."
+### Step 3: Generate the Project Brief
+
+Using UseCase.md content plus any answers from Step 2, generate `docs/project-brief.md`
+following the template in the brainstorming skill file.
+
+Use the real app name, persona names, capability descriptions, and constraints from
+UseCase.md — no generic placeholders.
+
+### Step 4: Confirm
+
+Show the Project Brief to the developer and ask:
+> "Does this accurately capture what we're building? Any corrections before we move to architecture?"
+
+Wait for confirmation before finishing.
+
+---
+
+When confirmed, tell the developer:
+> "Project Brief saved to `docs/project-brief.md`. Type `/data-structure` to design the data layer next."

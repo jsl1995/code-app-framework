@@ -11,6 +11,12 @@ informs which connectors are needed (Phase 5) and how the UI binds to data (Phas
 A **Data Architecture Document** containing an entity-relationship diagram, table
 definitions, data flow diagram, and delegation/performance notes.
 
+## How to run this phase
+
+Read `UseCase.md` before asking the developer any questions. Use the data source
+preference, row count estimates, and existing data source information from there.
+Only ask about what UseCase.md doesn't answer.
+
 ## Data Source Selection Guide
 
 Code apps access data exclusively through Power Platform connectors. The choice of

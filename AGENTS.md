@@ -1,16 +1,32 @@
 # Power Apps Code Apps — Agent Instructions
 
-Guide the developer through building a Power Apps Code App from scratch. Understand what the app needs to do, who it's for, then work through each skill in sequence to produce all deliverables (mock-up, data structure, Dataverse setup, implementation plan, and working code).
+Guide the developer through building a Power Apps Code App from scratch.
+
+## First: read UseCase.md
+
+**Before doing anything else**, read `UseCase.md` in the project root. It is the
+single source of truth for this project. Extract every answer it contains, then:
+
+- **Do not ask** the developer about anything already answered in UseCase.md
+- **Do ask** about any field left blank, marked `TBD`, or genuinely ambiguous
+- **Refer back** to UseCase.md throughout every phase — use its personas, data
+  sources, environment URLs, constraints, and success criteria rather than inventing
+  placeholders
+- If UseCase.md does not exist or is completely blank, ask the developer to fill it
+  in first: *"Before we start, please fill in `UseCase.md` with details about your
+  use case. The more you add, the less I'll need to ask."*
 
 ## How it works
 
-There are four groups with a natural conversation flow. Always start with Phase 1 unless the developer says otherwise.
+There are four groups with a natural conversation flow. Always start with Phase 1
+unless the developer says otherwise. At each phase, read the relevant SKILL.md before
+producing any output.
 
 ### Group 1: Design (Phases 1–5)
 
 Do all of these before writing any application code.
 
-1. **brainstorming** — Define the problem, personas, scope, success criteria, and platform constraints
+1. **brainstorming** — Validate the UseCase.md content, fill gaps, produce the Project Brief
 2. **architecture** — Solution architecture, hosting model, ALM strategy, security posture
 3. **data-structure** — Data sources, entity schemas, ER diagrams, delegation rules
 4. **mock-up** — Working React/TypeScript mockup components with realistic sample data
@@ -30,11 +46,13 @@ Do all of these before writing any application code.
 
 ## Skill reference
 
-Each skill lives in `agents/skills/[skill-name]/SKILL.md`. Read the relevant SKILL.md before starting that phase's work. Files marked *(stub)* exist as reference stubs — they are actionable but not yet fully expanded.
+Each skill lives in `agents/skills/[skill-name]/SKILL.md`. Read the relevant SKILL.md
+before starting that phase's work. Files marked *(stub)* are actionable but not yet
+fully expanded.
 
 | Phase | Skill Folder | Purpose | Status |
 |-------|-------------|---------|--------|
-| 1 | `brainstorming` | Problem definition, personas, scope, success criteria, platform limitations | Ready |
+| 1 | `brainstorming` | Validate UseCase.md, fill gaps, produce Project Brief | Ready |
 | 2 | `architecture` | Component design, hosting model, ALM, security posture | Stub |
 | 3 | `data-structure` | Data sources, ER diagrams, delegation, performance | Ready |
 | 4 | `mock-up` | Working React/TS mockup components with realistic sample data | Ready |
@@ -63,10 +81,12 @@ Consult this before producing any CLI instructions to ensure accuracy.
 - Architecture diagrams use **Mermaid** syntax
 - All mockups must be working, renderable code — not static wireframes
 - Every skill includes ready-to-paste **GitHub Copilot prompts**
+- **Always use names, entities, and personas from UseCase.md** — never use generic
+  placeholders like `[EntityName]` or `[UserRole]` after Phase 1
 
 ## Platform limitations — know before you start
 
-Surface these in the brainstorming phase so they shape scope:
+Surface any of these not yet acknowledged in UseCase.md:
 
 - Code apps do **not** run on the Power Apps mobile app or Windows app
 - **Excel Online (Business)** and **Excel Online (OneDrive)** connectors are not supported
@@ -78,6 +98,7 @@ Surface these in the brainstorming phase so they shape scope:
 
 ## Getting started
 
-Ask the developer: *"What app are we building? Tell me about the business problem and who will use it."*
-
-Then read `agents/skills/brainstorming/SKILL.md` and begin the interview.
+1. Read `UseCase.md`
+2. Identify what is answered and what is missing
+3. Ask only about what is missing
+4. Then read `agents/skills/brainstorming/SKILL.md` and produce the Project Brief
