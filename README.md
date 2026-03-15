@@ -33,7 +33,9 @@ code code-app-framework
 
 ### Step 2: Fill in UseCase.md
 
-Open `UseCase.md` and fill in as many sections as you can:
+Open `UseCase.md` and fill in as many sections as you can. If you want to see what
+a complete `UseCase.md` looks like, refer to `UseCase.example.md` — it shows a fully
+filled-in Asset Tracker app so you can understand the expected level of detail.
 
 - What business problem are you solving?
 - Who are the users (persona, role, device)?
@@ -124,13 +126,88 @@ These are also listed in `UseCase.md` — confirm them there as part of project 
 
 ---
 
+## Which AI tool are you using?
+
+The framework supports two AI tools. Both read the same skill files in `agents/skills/`.
+
+| | GitHub Copilot | Claude Code |
+|---|---|---|
+| **Root config** | `AGENTS.md` (auto-detected) | `claude-code/CLAUDE.md` → copy to project root |
+| **Slash commands** | `.github/prompts/*.prompt.md` | `claude-code/commands/` → copy to `.claude/commands/` |
+| **How it works** | Generates prompts for you to run | Reads, writes, and runs commands autonomously |
+| **Setup** | Clone and go | Copy two files/folders to project root |
+
+---
+
+## Using with Claude Code
+
+### Setup
+
+After cloning, copy the Claude Code files into place:
+
+```bash
+cp claude-code/CLAUDE.md CLAUDE.md
+cp -r claude-code/commands .claude/commands
+```
+
+### Starting a session
+
+Open Claude Code in the project root and say:
+
+```
+Let's build this code app.
+```
+
+Claude Code reads `CLAUDE.md` and `UseCase.md`, summarises what it found, asks only
+about gaps, and works through each phase **autonomously** — reading files, writing
+deliverables, and running PAC CLI and npm commands directly without copy-paste.
+
+### Slash commands (Claude Code)
+
+| Command | Phase | What Claude Code does |
+|---------|-------|-----------------------|
+| `/brainstorming` | 1 | Reads UseCase.md → writes `docs/project-brief.md` |
+| `/architecture` | 2 | Designs architecture → writes `docs/architecture.md` |
+| `/data-structure` | 3 | Designs schema → writes `docs/data-architecture.md` |
+| `/mock-up` | 4 | Generates `.tsx` mockup files in `src/mockups/` |
+| `/connectors` | 5 | Builds manifest → writes `docs/connector-manifest.md` |
+| `/implement-code` | 6 | Scaffolds project, runs PAC CLI, converts mockups, deploys |
+| `/testing` | 7 | Installs toolchain, writes tests, runs coverage |
+| `/accessibility` | 8 | Runs axe, fixes violations, writes audit report |
+| `/governance` | 9 | Writes README, runbook, app catalogue, CHANGELOG |
+| `/coding-standards` | 10 | Writes ESLint/Prettier/tsconfig, installs Husky |
+| `/error-handling` | 11 | Writes ErrorBoundary, retry logic, App Insights |
+| `/create-dataverse` | — | Creates tables, columns, security roles via PAC CLI |
+| `/plan-code` | — | Locks in technical decisions → writes implementation plan |
+
+---
+
 ## Using with GitHub Copilot
 
-Every skill includes ready-to-paste prompts for **Copilot Chat** and **Agent Mode**.
+Every skill includes ready-to-paste prompts for **Copilot Chat** and **Agent Mode**. There are two entry points — both read the same skill files.
 
 ### Agent Mode (recommended)
 
 Agent Mode (`@workspace`) gives Copilot access to your entire project, including `AGENTS.md`, `UseCase.md`, skill files, and generated service files. The agent will use your real use case context rather than asking you to fill in placeholders.
+
+```
+@workspace Let's build this code app.
+```
+
+### VS Code custom agent + slash commands
+
+The framework also ships with a custom VS Code Copilot agent (`code-app-builder`) defined in `.github/agents/code-app-builder.agent.md`. When Copilot detects this file, you can select `code-app-builder` from the agent picker and use these slash commands:
+
+| Command | What it does |
+|---------|-------------|
+| `/brainstorming` | Phase 1 — validate UseCase.md and produce the Project Brief |
+| `/data-structure` | Phase 3 — design data sources and ER diagrams |
+| `/mock-up` | Phase 4 — generate working React/TS mockup components |
+| `/create-dataverse` | Set up Dataverse tables, columns, and security roles |
+| `/plan-code` | Technical planning — lock in architecture, standards, test strategy |
+| `/implement-code` | Phase 6/8 — scaffold, connect data sources, generate components, deploy |
+| `/architecture` | Phase 2 — solution architecture, ALM, and security posture |
+| `/connectors` | Phase 5 — connector manifest and connection references |
 
 ### File references in prompts
 
@@ -156,26 +233,59 @@ This framework also works as a skill set for [Claude Code](https://docs.anthropi
 
 ```
 code-app-framework/
-├── AGENTS.md                              # Root orchestrator — read by Copilot first
+├── AGENTS.md                              # GitHub Copilot root orchestrator
 ├── UseCase.md                             # Your project's source of truth — fill this in first
+├── UseCase.example.md                     # Fully filled example (Asset Tracker app)
 ├── README.md                              # This file
-└── agents/
+├── CHANGELOG.md                           # Framework version history
+│
+├── claude-code/                           # Claude Code entry point
+│   ├── CLAUDE.md                          # → copy to project root as CLAUDE.md
+│   └── commands/                          # → copy to .claude/commands/
+│       ├── brainstorming.md               # /brainstorming
+│       ├── architecture.md                # /architecture
+│       ├── data-structure.md              # /data-structure
+│       ├── mock-up.md                     # /mock-up
+│       ├── connectors.md                  # /connectors
+│       ├── implement-code.md              # /implement-code
+│       ├── testing.md                     # /testing
+│       ├── accessibility.md               # /accessibility
+│       ├── governance.md                  # /governance
+│       ├── coding-standards.md            # /coding-standards
+│       ├── error-handling.md              # /error-handling
+│       ├── create-dataverse.md            # /create-dataverse
+│       └── plan-code.md                   # /plan-code
+│
+├── .github/                               # GitHub Copilot entry point
+│   ├── agents/
+│   │   └── code-app-builder.agent.md      # VS Code custom agent definition
+│   └── prompts/
+│       ├── brainstorming.prompt.md        # /brainstorming
+│       ├── architecture.prompt.md         # /architecture
+│       ├── data-structure.prompt.md       # /data-structure
+│       ├── mock-up.prompt.md              # /mock-up
+│       ├── connectors.prompt.md           # /connectors
+│       ├── create-dataverse.prompt.md     # /create-dataverse
+│       ├── plan-code.prompt.md            # /plan-code
+│       └── implement-code.prompt.md       # /implement-code
+│
+└── agents/                                # Shared skill files (used by both AI tools)
     └── skills/
-        ├── pac-reference.md               # PAC CLI command cheatsheet (all pac code commands)
-        ├── brainstorming/SKILL.md         # Phase 1: validate UseCase.md, produce Project Brief
-        ├── architecture/SKILL.md          # Phase 2: solution architecture & ALM
-        ├── data-structure/SKILL.md        # Phase 3: data sources, ER diagrams, delegation
-        ├── mock-up/SKILL.md               # Phase 4: working React/TS mockup generation
-        ├── connectors/SKILL.md            # Phase 5: connector manifest & connection references
-        ├── implement-code/SKILL.md        # Phase 6: build, Copilot prompts, deploy
-        ├── testing/SKILL.md               # Phase 7: unit, integration, E2E, UAT
-        ├── accessibility/SKILL.md         # Phase 8: WCAG 2.2 AA audit
-        ├── governance/SKILL.md            # Phase 9: handover pack & runbook
-        ├── coding-standards/SKILL.md      # Phase 10: ESLint, Prettier, TypeScript config
-        ├── error-handling/SKILL.md        # Phase 11: retry logic, logging, App Insights
-        ├── create-dataverse/SKILL.md      # Dataverse setup, tables, security roles
-        ├── plan-code/SKILL.md             # Architecture, connectors, standards, test strategy
-        └── power-apps-code-apps/SKILL.md  # Master platform reference & conventions
+        ├── pac-reference.md               # PAC CLI command cheatsheet
+        ├── brainstorming/SKILL.md         # Phase 1
+        ├── architecture/SKILL.md          # Phase 2
+        ├── data-structure/SKILL.md        # Phase 3
+        ├── mock-up/SKILL.md               # Phase 4
+        ├── connectors/SKILL.md            # Phase 5
+        ├── implement-code/SKILL.md        # Phase 6
+        ├── testing/SKILL.md               # Phase 7
+        ├── accessibility/SKILL.md         # Phase 8
+        ├── governance/SKILL.md            # Phase 9
+        ├── coding-standards/SKILL.md      # Phase 10
+        ├── error-handling/SKILL.md        # Phase 11
+        ├── create-dataverse/SKILL.md      # Dataverse setup
+        ├── plan-code/SKILL.md             # Technical planning
+        └── power-apps-code-apps/SKILL.md  # Master platform reference
 ```
 
 ---

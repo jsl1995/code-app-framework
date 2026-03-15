@@ -103,7 +103,7 @@ npx lint-staged
 export default {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
-  setupFilesAfterFramework: ['<rootDir>/src/test-utils/setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/src/test-utils/setup.ts'],
   coveragePathIgnorePatterns: [
     '/node_modules/',
     '/src/generated/',   // exclude auto-generated code from coverage

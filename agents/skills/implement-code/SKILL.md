@@ -29,6 +29,36 @@ npm install
 This creates the base project with `power.config.json`, a starter SPA, and the
 `@microsoft/power-apps` client library.
 
+#### Understanding `power.config.json`
+
+`pac code init` generates a `power.config.json` at the project root. This file is
+**CLI-owned** — do not edit it manually. It contains:
+
+| Field | Purpose |
+|-------|---------|
+| `name` | The app's internal name (used by `pac code push`) |
+| `environmentUrl` | The Power Platform environment the app is bound to |
+| `solutionName` | The solution to push the app into |
+| `dataConnectors` | Auto-populated list of added data sources (updated by `add-data-source`) |
+
+Commit `power.config.json` to source control. It is not secret — it contains no
+credentials. Credentials are managed by `pac auth` (stored in the OS credential store).
+
+#### Environment variables
+
+Code Apps do not use `.env` files for connector credentials — authentication is handled
+entirely by the Power Apps host. The only environment-specific values you may need in a
+`.env.local` file are:
+
+```bash
+# .env.local (optional — for local dev overrides only, never commit)
+VITE_APP_INSIGHTS_KEY=your-key-here   # Application Insights instrumentation key
+VITE_ENVIRONMENT_URL=https://org.crm.dynamics.com  # override for local dev
+```
+
+Add `.env.local` to `.gitignore`. Commit a `.env.example` documenting any keys
+without values (see governance/SKILL.md).
+
 **Alternative (npm CLI, v1.0.4+)**:
 ```bash
 npx @microsoft/power-apps init --name "MyApp" --framework react-ts
@@ -263,17 +293,61 @@ error handling, and empty results.
 
 ## CI/CD Pipeline (Optional)
 
-For teams wanting automated deployment:
+For teams wanting automated deployment via GitHub Actions.
+
+### Step 1: Create a service principal
+
+A service principal lets the CI pipeline authenticate to Power Platform without using
+a personal account.
+
+1. **Register an app in Entra ID** (Azure Portal → Entra ID → App registrations → New registration)
+2. **Create a client secret** (Certificates & secrets → New client secret) — copy the value immediately
+3. **Note the Application (client) ID and Directory (tenant) ID** from the app overview
+4. **Grant Power Platform access** — add the service principal as an application user:
+   - Power Platform Admin Center → Environment → Settings → Users + permissions → Application users
+   - Add the app registration's client ID
+   - Assign the **System Administrator** security role (or a least-privilege custom role)
+
+### Step 2: Store secrets in GitHub
+
+In your GitHub repository → Settings → Secrets and variables → Actions:
+
+| Secret name | Value |
+|-------------|-------|
+| `POWERPLATFORM_APP_ID` | Application (client) ID from step 1 |
+| `POWERPLATFORM_CLIENT_SECRET` | Client secret value from step 1 |
+| `POWERPLATFORM_TENANT_ID` | Directory (tenant) ID from step 1 |
+
+Add as a variable (not a secret — it's not sensitive):
+
+| Variable name | Value |
+|--------------|-------|
+| `POWERPLATFORM_ENVIRONMENT_URL` | e.g., `https://org.crm.dynamics.com` |
+| `SOLUTION_NAME` | Your solution unique name |
+
+### Step 3: GitHub Actions workflow
 
 ```yaml
-# Example: GitHub Actions
+# .github/workflows/deploy.yml
 name: Deploy Code App
 on:
   push:
     branches: [main]
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+      - run: npm ci
+      - run: npm test -- --coverage --watchAll=false
+      - run: npm run lint
+
   deploy:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -284,11 +358,18 @@ jobs:
       - run: npm run build
       - name: Install PAC CLI
         run: dotnet tool install --global Microsoft.PowerApps.CLI.Tool
-      - name: Authenticate
-        run: pac auth create --applicationId ${{ secrets.APP_ID }} --clientSecret ${{ secrets.CLIENT_SECRET }} --tenant ${{ secrets.TENANT_ID }}
-      - name: Deploy
+      - name: Authenticate to Power Platform
+        run: |
+          pac auth create \
+            --applicationId ${{ secrets.POWERPLATFORM_APP_ID }} \
+            --clientSecret ${{ secrets.POWERPLATFORM_CLIENT_SECRET }} \
+            --tenant ${{ secrets.POWERPLATFORM_TENANT_ID }} \
+            --environment ${{ vars.POWERPLATFORM_ENVIRONMENT_URL }}
+      - name: Deploy code app
         run: pac code push --solution-unique-name ${{ vars.SOLUTION_NAME }}
 ```
+
+> The `test` job runs first and `deploy` only proceeds if tests pass (`needs: test`).
 
 ## What's Next
 

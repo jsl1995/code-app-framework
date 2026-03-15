@@ -53,17 +53,62 @@ fully expanded.
 | Phase | Skill Folder | Purpose | Status |
 |-------|-------------|---------|--------|
 | 1 | `brainstorming` | Validate UseCase.md, fill gaps, produce Project Brief | Ready |
-| 2 | `architecture` | Component design, hosting model, ALM, security posture | Stub |
+| 2 | `architecture` | Component design, hosting model, ALM, security posture | Ready |
 | 3 | `data-structure` | Data sources, ER diagrams, delegation, performance | Ready |
 | 4 | `mock-up` | Working React/TS mockup components with realistic sample data | Ready |
-| 5 | `connectors` | Connector selection, connection references, generated services | Stub |
+| 5 | `connectors` | Connector selection, connection references, generated services | Ready |
 | 6 | `implement-code` | Project init, Copilot prompt sequences, build, deploy | Ready |
-| 7 | `testing` | Unit, integration, E2E, UAT, performance | Stub |
-| 8 | `accessibility` | WCAG 2.2 AA audit, ARIA patterns, compliance | Stub |
-| 9 | `governance` | Documentation, runbooks, naming conventions, change logs | Stub |
-| 10 | `coding-standards` | ESLint, Prettier, TypeScript config, PR checklist | Stub |
-| 11 | `error-handling` | Error taxonomy, retry logic, logging, App Insights | Stub |
+| 7 | `testing` | Unit, integration, E2E, UAT, performance | Ready |
+| 8 | `accessibility` | WCAG 2.2 AA audit, ARIA patterns, compliance | Ready |
+| 9 | `governance` | Documentation, runbooks, naming conventions, change logs | Ready |
+| 10 | `coding-standards` | ESLint, Prettier, TypeScript config, PR checklist | Ready |
+| 11 | `error-handling` | Error taxonomy, retry logic, logging, App Insights | Ready |
 | — | `power-apps-code-apps` | Master orchestrator — platform overview, full phase table | Ready |
+
+## Entry points
+
+This framework has two entry points — both read the same skill files.
+
+| Entry point | File | How to use |
+|-------------|------|-----------|
+| **GitHub Copilot Agent Mode** | `AGENTS.md` (this file) | Open Copilot Chat → Agent Mode (`@workspace`) → `@workspace Let's build this code app` |
+| **VS Code custom agent** | `.github/agents/code-app-builder.agent.md` | Open Copilot Chat → select `code-app-builder` agent → use slash commands |
+
+### VS Code slash commands (code-app-builder agent)
+
+When using the VS Code custom agent, these slash commands are available:
+
+| Command | Phase | Description |
+|---------|-------|-------------|
+| `/brainstorming` | 1 | Validate UseCase.md and produce the Project Brief |
+| `/data-structure` | 3 | Design data sources, ER diagrams, and delegation rules |
+| `/mock-up` | 4 | Generate working React/TS mockup components |
+| `/create-dataverse` | 6a | Set up Dataverse tables, columns, and security roles |
+| `/plan-code` | 7 | Lock in technical decisions and produce the Implementation Plan |
+| `/implement-code` | 8 | Scaffold, connect data sources, generate components, deploy |
+
+> Phases 2 (Architecture) and 5 (Connectors) are covered by the Agent Mode flow above.
+> Use `/architecture` or `/connectors` prompts directly from `.github/prompts/` in Agent Mode.
+
+## Phase numbering reference
+
+The Agent Mode flow (this file) uses an 11-phase model. The VS Code `code-app-builder` agent uses a condensed 8-phase model. Here is how they map:
+
+| AGENTS.md phase | code-app-builder phase | Skill |
+|----------------|----------------------|-------|
+| 1 | 1 | brainstorming |
+| 2 | 2 | architecture |
+| 3 | 3 | data-structure |
+| 4 | 4 | mock-up |
+| 5 | 5 | connectors |
+| 6 | 8 | implement-code |
+| 7 | — | testing *(post-deployment)* |
+| 8 | — | accessibility *(post-deployment)* |
+| 9 | — | governance *(post-deployment)* |
+| 10 | 7 (part) | coding-standards *(set up at build start)* |
+| 11 | 7 (part) | error-handling *(implemented during build)* |
+| — | 6 | create-dataverse *(Dataverse-specific setup)* |
+| — | 7 | plan-code *(technical planning before build)* |
 
 ## PAC CLI reference
 

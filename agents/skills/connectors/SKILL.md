@@ -154,6 +154,91 @@ await AccountsService.delete(id);
 > Keep the relevant `*Service.ts` and `*Model.ts` files open in VS Code when
 > prompting GitHub Copilot — it will use the exact method signatures and types.
 
+## State Management Patterns
+
+### The hook pattern
+
+Each connector gets a wrapper hook that exposes a consistent interface. This prevents
+redundant connector calls across components and makes loading/error states composable.
+
+```typescript
+// src/hooks/useAccounts.ts
+import { useState, useEffect, useCallback } from 'react';
+import { AccountsService } from '../generated/services/AccountsService';
+import type { Account } from '../generated/models/DataverseModel';
+
+interface UseAccountsResult {
+  data: Account[] | null;
+  isLoading: boolean;
+  error: Error | null;
+  refetch: () => void;
+}
+
+export function useAccounts(): UseAccountsResult {
+  const [data, setData] = useState<Account[] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  const fetch = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const result = await AccountsService.getall();
+      setData(result.value ?? []);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Unknown error'));
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { void fetch(); }, [fetch]);
+
+  return { data, isLoading, error, refetch: fetch };
+}
+```
+
+### Avoiding redundant connector calls
+
+Lift shared hooks to the nearest common ancestor rather than calling the same hook
+in multiple child components — React re-renders cascade downward so data fetched at
+the parent level is available to all children without extra calls.
+
+```typescript
+// Parent component — fetch once, pass down
+function AccountsPage() {
+  const { data: accounts, isLoading, error } = useAccounts();
+  return (
+    <>
+      <AccountSummaryCard accounts={accounts} isLoading={isLoading} />
+      <AccountList accounts={accounts} isLoading={isLoading} error={error} />
+    </>
+  );
+}
+```
+
+### Cache invalidation after mutations
+
+After a create, update, or delete operation, call `refetch` from the parent hook to
+keep the list in sync without a full page reload:
+
+```typescript
+function AccountsPage() {
+  const { data, isLoading, error, refetch } = useAccounts();
+
+  const handleDelete = async (id: string) => {
+    await AccountsService.delete(id);
+    refetch(); // re-fetch the list after deletion
+  };
+
+  return <AccountList accounts={data} onDelete={handleDelete} />;
+}
+```
+
+For more complex state (optimistic updates, cross-page cache sharing), consider
+[Zustand](https://zustand-demo.pmnd.rs/) — see `agents/skills/plan-code/SKILL.md`
+for the state management comparison table.
+
 ## GitHub Copilot Prompt
 
 ```
